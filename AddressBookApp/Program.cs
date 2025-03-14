@@ -1,9 +1,16 @@
 using System;
+using BusinessLayer.Interface;
+using BusinessLayer.Service;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer;
+using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
+builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();
+
 
 // Add services to the container
 builder.Services.AddControllers();
