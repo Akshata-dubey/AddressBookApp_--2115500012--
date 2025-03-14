@@ -23,8 +23,8 @@ builder.Services.AddDbContext<AddressBookDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register Repository and Service in Dependency Injection
-builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();
-builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
+builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();  // Repository Layer
+builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();  // Business Logic Layer
 
 // Register FluentValidation Validators
 builder.Services.AddValidatorsFromAssemblyContaining<AddressBookEntryValidator>();
