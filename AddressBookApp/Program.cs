@@ -1,25 +1,33 @@
-using System;
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using ModelLayer.DTO;
+using ModelLayer.Validators;
 using RepositoryLayer;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
-builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();
-
-
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddressBookEntryValidator>());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure Entity Framework Core
 builder.Services.AddDbContext<AddressBookDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register Repository and Service in Dependency Injection
+builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();
+builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();
+
+// Register FluentValidation Validators
+builder.Services.AddValidatorsFromAssemblyContaining<AddressBookEntryValidator>();
 
 var app = builder.Build();
 

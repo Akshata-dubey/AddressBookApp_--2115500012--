@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace ModelLayer.DTO
 {
+
+    //Adding the DTO Folder as the result of Section-2-UC1
     public class AddressBookEntityEntry
     {
         [Key]

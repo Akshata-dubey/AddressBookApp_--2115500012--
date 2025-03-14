@@ -1,7 +1,8 @@
 using BusinessLayer.Interface;
-using BusinessLayer.Service;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using ModelLayer.DTO;
+using ModelLayer.Validators;
 
 namespace AddressBookApplication.Controllers
 {
@@ -9,10 +10,13 @@ namespace AddressBookApplication.Controllers
     [Route("api/[controller]")]
     public class AddressBookController : ControllerBase
     {
-        IAddressBookBL _service;
-        public AddressBookController(IAddressBookBL service)
+        private readonly IAddressBookBL _service;
+        private readonly IValidator<AddressBookEntityEntry> _validator;
+
+        public AddressBookController(IAddressBookBL service, IValidator<AddressBookEntityEntry> validator)
         {
             _service = service;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -30,20 +34,19 @@ namespace AddressBookApplication.Controllers
             {
                 return NotFound();
             }
-
             return Ok(contact);
         }
 
         [HttpPost]
         public async Task<ActionResult<AddressBookEntityEntry>> AddContact([FromBody] AddressBookEntityEntry contact)
         {
-            if (contact == null)
+            var validationResult = await _validator.ValidateAsync(contact);
+            if (!validationResult.IsValid)
             {
-                return BadRequest("Invalid contact data.");
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
             var addedContact = await _service.AddContact(contact);
-
             return CreatedAtAction(nameof(GetContactById), new { id = addedContact.Id }, addedContact);
         }
 
