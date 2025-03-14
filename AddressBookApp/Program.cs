@@ -1,3 +1,4 @@
+using BusinessLayer.Helper;
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using FluentValidation;
@@ -17,6 +18,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<JwtTokenGenerator>();
+
 
 // Configure Entity Framework Core
 builder.Services.AddDbContext<AddressBookDBContext>(options =>
@@ -25,6 +28,11 @@ builder.Services.AddDbContext<AddressBookDBContext>(options =>
 // Register Repository and Service in Dependency Injection
 builder.Services.AddScoped<IAddressBookRL, AddressBookRL>();  // Repository Layer
 builder.Services.AddScoped<IAddressBookBL, AddressBookBL>();  // Business Logic Layer
+builder.Services.AddScoped<IUserRL, UserRL>();
+builder.Services.AddScoped<IUserBL, UserBL>();
+
+
+
 
 // Register FluentValidation Validators
 builder.Services.AddValidatorsFromAssemblyContaining<AddressBookEntryValidator>();
